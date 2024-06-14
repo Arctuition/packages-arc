@@ -1,3 +1,36 @@
+## 6.3.3
+
+* Updates minimum supported SDK version to Flutter 3.22/Dart 3.4.
+* Removes support for apps using the v1 Android embedding.
+
+## 6.3.2
+
+* Bumps androidx.annotation:annotation from 1.7.1 to 1.8.0.
+
+## 6.3.1
+
+* Updates minSdkVersion to 19.
+* Updates minimum supported SDK version to Flutter 3.16/Dart 3.2.
+
+## 6.3.0
+
+* Adds support for `BrowserConfiguration`.
+* Implements `showTitle` functionality for Android Custom Tabs.
+* Updates compileSdk version to 34.
+
+## 6.2.3
+
+* Bumps androidx.annotation:annotation from 1.7.0 to 1.7.1.
+
+## 6.2.2
+
+* Updates minimum required plugin_platform_interface version to 2.1.7.
+
+## 6.2.1
+
+* Updates minimum supported SDK version to Flutter 3.10/Dart 3.0.
+* Fixes lint warnings.
+
 ## 6.2.0
 
 * Adds support for `inAppBrowserView` as a separate launch mode option from

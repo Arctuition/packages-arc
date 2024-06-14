@@ -33,6 +33,10 @@ const String platformWindows = 'windows';
 /// Key for enable experiment.
 const String kEnableExperiment = 'enable-experiment';
 
+/// A String to add to comments on temporarily-added changes that should not
+/// land (e.g., dependency overrides in federated plugin combination PRs).
+const String kDoNotLandWarning = 'DO NOT MERGE';
+
 /// Target platforms supported by Flutter.
 // ignore: public_member_api_docs
 enum FlutterPlatform { android, ios, linux, macos, web, windows }
@@ -68,6 +72,13 @@ final Map<Version, Version> _dartSdkForFlutterSdk = <Version, Version>{
   Version(3, 10, 0): Version(3, 0, 0),
   Version(3, 10, 6): Version(3, 0, 6),
   Version(3, 13, 0): Version(3, 1, 0),
+  Version(3, 13, 9): Version(3, 1, 5),
+  Version(3, 16, 0): Version(3, 2, 0),
+  Version(3, 16, 6): Version(3, 2, 3),
+  Version(3, 16, 9): Version(3, 2, 6),
+  Version(3, 19, 0): Version(3, 3, 0),
+  Version(3, 19, 6): Version(3, 3, 4),
+  Version(3, 22, 0): Version(3, 4, 0),
 };
 
 /// Returns the version of the Dart SDK that shipped with the given Flutter

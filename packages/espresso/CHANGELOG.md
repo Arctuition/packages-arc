@@ -1,3 +1,19 @@
+## 0.3.0+9
+
+* Updates minimum supported SDK version to Flutter 3.22/Dart 3.4.
+* Removes support for apps using the v1 Android embedding.
+
+## 0.3.0+8
+
+* Updates minSdkVersion to 19.
+* Updates minimum supported SDK version to Flutter 3.16/Dart 3.2.
+* Updates compileSdk version to 34.
+
+## 0.3.0+7
+
+* Replaces call to deprecated `getObservatoryUri`.
+* Updates minimum supported SDK version to Flutter 3.10/Dart 3.0.
+
 ## 0.3.0+6
 
 * Adds pub topics to package metadata.

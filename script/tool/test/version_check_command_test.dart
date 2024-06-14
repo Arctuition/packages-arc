@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import 'dart:convert';
-import 'dart:io' as io;
 
 import 'package:args/command_runner.dart';
 import 'package:file/file.dart';
@@ -39,8 +38,6 @@ void testAllowedVersion(
     expect(allowedVersions, isNot(contains(head)));
   }
 }
-
-class MockProcessResult extends Mock implements io.ProcessResult {}
 
 void main() {
   const String indentation = '  ';
@@ -284,7 +281,7 @@ void main() {
             contains(
                 '  Breaking changes to platform interfaces are not allowed '
                 'without explicit justification.\n'
-                '  See https://github.com/flutter/flutter/wiki/Contributing-to-Plugins-and-Packages '
+                '  See https://github.com/flutter/flutter/blob/master/docs/ecosystem/contributing/README.md '
                 'for more information.'),
           ]));
       expect(
@@ -879,6 +876,7 @@ packages/plugin/example/android/lint-baseline.xml
 packages/plugin/example/android/src/androidTest/foo/bar/FooTest.java
 packages/plugin/example/ios/RunnerTests/Foo.m
 packages/plugin/example/ios/RunnerUITests/info.plist
+packages/plugin/darwin/Tests/Foo.swift
 packages/plugin/analysis_options.yaml
 packages/plugin/CHANGELOG.md
 ''')),
