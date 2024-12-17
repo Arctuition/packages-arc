@@ -620,6 +620,15 @@ class AndroidWebViewController extends PlatformWebViewController {
 
   @override
   Future<String?> getUserAgent() => _webView.settings.getUserAgentString();
+
+  /// Sets the cache mode of the WebView.
+  ///
+  /// The cache mode can be one of the following:
+  /// * [WebSettings.LOAD_DEFAULT] - Default cache usage mode. If the navigation type doesn't impose any specific behavior, use cached resources when they are available and not expired, otherwise load resources from the network.
+  /// * [WebSettings.LOAD_CACHE_ELSE_NETWORK] - Use cached resources when they are available, even if they have expired. Otherwise load resources from the network.
+  /// * [WebSettings.LOAD_NO_CACHE] - Don't use the cache, load from the network.
+  /// * [WebSettings.LOAD_CACHE_ONLY] - Don't use the network, load from the cache.
+  Future<void> setCacheMode(int mode) => _webView.settings.setCacheMode(mode);
 }
 
 /// Android implementation of [PlatformWebViewPermissionRequest].

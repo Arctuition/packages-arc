@@ -301,6 +301,8 @@ abstract class WebSettingsHostApi {
   void setTextZoom(int instanceId, int textZoom);
 
   String getUserAgentString(int instanceId);
+
+  void setCacheMode(int instanceId, int mode);
 }
 
 @HostApi(dartHostTestHandler: 'TestJavaScriptChannelHostApi')

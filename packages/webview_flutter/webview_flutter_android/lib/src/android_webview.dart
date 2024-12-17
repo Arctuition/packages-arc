@@ -700,6 +700,30 @@ class WebSettings extends JavaObject {
     return api.getUserAgentStringFromInstance(this);
   }
 
+  /// Sets the cache mode of the WebView.
+  ///
+  /// The cache mode can be one of the following values:
+  /// * [WebSettings.LOAD_DEFAULT] - Default cache usage mode. If the navigation type doesn't impose any specific behavior, use cached resources when they are available and not expired, otherwise load resources from the network.
+  /// * [WebSettings.LOAD_CACHE_ELSE_NETWORK] - Use cached resources when they are available, even if they have expired. Otherwise load resources from the network.
+  /// * [WebSettings.LOAD_NO_CACHE] - Don't use the cache, load from the network.
+  /// * [WebSettings.LOAD_CACHE_ONLY] - Don't use the network, load from the cache.
+  Future<void> setCacheMode(int mode) {
+    return api.setCacheModeFromInstance(this, mode);
+  }
+
+  /// Default cache usage mode. If the navigation type doesn't impose any specific behavior,
+  /// use cached resources when they are available and not expired, otherwise load resources from the network.
+  static const int LOAD_DEFAULT = -1;
+
+  /// Use cached resources when they are available, even if they have expired. Otherwise load resources from the network.
+  static const int LOAD_CACHE_ELSE_NETWORK = 1;
+
+  /// Don't use the cache, load from the network.
+  static const int LOAD_NO_CACHE = 2;
+
+  /// Don't use the network, load from the cache.
+  static const int LOAD_CACHE_ONLY = 3;
+
   @override
   WebSettings copy() {
     return WebSettings.detached(

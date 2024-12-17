@@ -133,6 +133,12 @@ public class WebSettingsHostApiImpl implements WebSettingsHostApi {
     webSettings.setTextZoom(textZoom.intValue());
   }
 
+  @Override
+  public void setCacheMode(@NonNull Long instanceId, @NonNull Long mode) {
+    final WebSettings webSettings = Objects.requireNonNull(instanceManager.getInstance(instanceId));
+    webSettings.setCacheMode(mode.intValue());
+  }
+
   @NonNull
   @Override
   public String getUserAgentString(@NonNull Long instanceId) {
