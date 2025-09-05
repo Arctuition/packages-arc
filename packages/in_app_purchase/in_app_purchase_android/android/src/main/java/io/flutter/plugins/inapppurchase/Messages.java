@@ -3678,7 +3678,13 @@ public class Messages {
                     new Result<PlatformProductDetailsResponse>() {
                       public void success(PlatformProductDetailsResponse result) {
                         wrapped.add(0, result);
-                        reply.reply(wrapped);
+
+                        try {
+                          reply.reply(wrapped);
+                        } catch (Throwable exception) {
+                          // try to fix https://arcsite.sentry.io/issues/6529551518/
+                          Log.e("IAP", exception.getLocalizedMessage());
+                        }
                       }
 
                       public void error(Throwable error) {
