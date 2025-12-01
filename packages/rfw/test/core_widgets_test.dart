@@ -1,4 +1,4 @@
-// Copyright 2013 The Flutter Authors. All rights reserved.
+// Copyright 2013 The Flutter Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -14,10 +14,11 @@ import 'package:rfw/rfw.dart';
 
 void main() {
   testWidgets('Core widgets', (WidgetTester tester) async {
-    final Runtime runtime = Runtime()
+    final runtime = Runtime()
       ..update(const LibraryName(<String>['core']), createCoreWidgets());
-    final DynamicContent data = DynamicContent();
-    final List<String> eventLog = <String>[];
+    addTearDown(runtime.dispose);
+    final data = DynamicContent();
+    final eventLog = <String>[];
     await tester.pumpWidget(
       RemoteWidget(
         runtime: runtime,
@@ -243,13 +244,15 @@ void main() {
     expect(childSize.height, fractionallySizedBoxSize.height * 0.8);
     expect(tester.widget<Text>(find.text('test')).textScaler, const TextScaler.linear(3));
     expect(tester.widget<FractionallySizedBox>(find.byType(FractionallySizedBox)).alignment, Alignment.center);
+    imageCache.clear();
   });
 
   testWidgets('More core widgets', (WidgetTester tester) async {
-    final Runtime runtime = Runtime()
+    final runtime = Runtime()
       ..update(const LibraryName(<String>['core']), createCoreWidgets());
-    final DynamicContent data = DynamicContent();
-    final List<String> eventLog = <String>[];
+    addTearDown(runtime.dispose);
+    final data = DynamicContent();
+    final eventLog = <String>[];
     await tester.pumpWidget(
       MaterialApp(
         home: RemoteWidget(

@@ -1,4 +1,4 @@
-// Copyright 2013 The Flutter Authors. All rights reserved.
+// Copyright 2013 The Flutter Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -11,16 +11,13 @@ import 'package:mockito/mockito.dart';
 
 import 'content_progress_provider_test.mocks.dart';
 
-@GenerateNiceMocks(<MockSpec<Object>>[
-  MockSpec<IMAContentPlayhead>(),
-])
+@GenerateNiceMocks(<MockSpec<Object>>[MockSpec<IMAContentPlayhead>()])
 void main() {
   group('IOSContentProgressProvider', () {
     test('setProgress', () async {
-      final MockIMAContentPlayhead mockContentPlayhead =
-          MockIMAContentPlayhead();
+      final mockContentPlayhead = MockIMAContentPlayhead();
 
-      final IOSContentProgressProvider provider = IOSContentProgressProvider(
+      final provider = IOSContentProgressProvider(
         IOSContentProgressProviderCreationParams(
           proxy: InteractiveMediaAdsProxy(
             newIMAContentPlayhead: () => mockContentPlayhead,

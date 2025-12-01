@@ -1,6 +1,12 @@
-## NEXT
+## 3.1.5
+
+* Updates to Pigeon 26.
+* Updates minimum supported SDK version to Flutter 3.32/Dart 3.8.
+
+## 3.1.4
 
 * Updates minimum supported SDK version to Flutter 3.22/Dart 3.4.
+* Fixes an issue where the URL logged would not be unescaped on failure.
 
 ## 3.1.3
 

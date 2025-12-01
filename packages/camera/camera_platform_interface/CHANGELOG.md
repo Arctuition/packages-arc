@@ -1,6 +1,26 @@
 ## NEXT
 
+* Updates minimum supported SDK version to Flutter 3.32/Dart 3.8.
+
+## 2.12.0
+
+* Adds support for video stabilization.
+
+## 2.11.0
+
+* Adds a flag to configure a recording to be persistent across camera changes. See
+  `VideoCaptureOptions.enablePersistentRecording`.
+* Updates minimum supported SDK version to Flutter 3.29/Dart 3.7.
+
+## 2.10.0
+
+* Introduces a new `CameraLensType` enum to provide lens type information about
+  the camera (e.g., ultra-wide, telephoto, ...).
+
+## 2.9.0
+
 * Updates minimum supported SDK version to Flutter 3.22/Dart 3.4.
+* Adds API support query for image streaming.
 
 ## 2.8.0
 

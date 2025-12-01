@@ -16,6 +16,11 @@ export 'src/cache.dart';
 export 'src/default_theme.dart';
 export 'src/loaders.dart';
 
+/// Builder function to create an error widget. This builder is called when
+/// the image failed loading.
+typedef SvgErrorWidgetBuilder =
+    Widget Function(BuildContext context, Object error, StackTrace stackTrace);
+
 /// Instance for [Svg]'s utility methods, which can produce a [DrawableRoot]
 /// or [PictureInfo] from [String] or [Uint8List].
 final Svg svg = Svg._();
@@ -60,7 +65,7 @@ class SvgPicture extends StatelessWidget {
   /// If `matchTextDirection` is set to true, the picture will be flipped
   /// horizontally in [TextDirection.rtl] contexts.
   ///
-  /// The `allowDrawingOutsideOfViewBox` parameter should be used with caution -
+  /// The `allowDrawingOutsideViewBox` parameter should be used with caution -
   /// if set to true, it will not clip the canvas used internally to the view box,
   /// meaning the picture may draw beyond the intended area and lead to undefined
   /// behavior or additional memory overhead.
@@ -86,11 +91,14 @@ class SvgPicture extends StatelessWidget {
     this.semanticsLabel,
     this.excludeFromSemantics = false,
     this.clipBehavior = Clip.hardEdge,
+    this.errorBuilder,
     @Deprecated(
-        'No code should use this parameter. It never was implemented properly. '
-        'The SVG theme must be set on the bytesLoader.')
+      'No code should use this parameter. It never was implemented properly. '
+      'The SVG theme must be set on the bytesLoader.',
+    )
     SvgTheme? theme,
     @Deprecated('This no longer does anything.') bool cacheColorFilter = false,
+    this.renderingStrategy = RenderingStrategy.picture,
   });
 
   /// Instantiates a widget that renders an SVG picture from an [AssetBundle].
@@ -108,7 +116,7 @@ class SvgPicture extends StatelessWidget {
   /// If `matchTextDirection` is set to true, the picture will be flipped
   /// horizontally in [TextDirection.rtl] contexts.
   ///
-  /// The `allowDrawingOutsideOfViewBox` parameter should be used with caution -
+  /// The `allowDrawingOutsideViewBox` parameter should be used with caution -
   /// if set to true, it will not clip the canvas used internally to the view box,
   /// meaning the picture may draw beyond the intended area and lead to undefined
   /// behavior or additional memory overhead.
@@ -184,19 +192,23 @@ class SvgPicture extends StatelessWidget {
     this.semanticsLabel,
     this.excludeFromSemantics = false,
     this.clipBehavior = Clip.hardEdge,
+    this.errorBuilder,
     SvgTheme? theme,
+    ColorMapper? colorMapper,
     ui.ColorFilter? colorFilter,
     @Deprecated('Use colorFilter instead.') ui.Color? color,
     @Deprecated('Use colorFilter instead.')
     ui.BlendMode colorBlendMode = ui.BlendMode.srcIn,
     @Deprecated('This no longer does anything.') bool cacheColorFilter = false,
-  })  : bytesLoader = SvgAssetLoader(
-          assetName,
-          packageName: package,
-          assetBundle: bundle,
-          theme: theme,
-        ),
-        colorFilter = colorFilter ?? _getColorFilter(color, colorBlendMode);
+    this.renderingStrategy = RenderingStrategy.picture,
+  }) : bytesLoader = SvgAssetLoader(
+         assetName,
+         packageName: package,
+         assetBundle: bundle,
+         theme: theme,
+         colorMapper: colorMapper,
+       ),
+       colorFilter = colorFilter ?? _getColorFilter(color, colorBlendMode);
 
   /// Creates a widget that displays an SVG obtained from the network.
   ///
@@ -210,7 +222,7 @@ class SvgPicture extends StatelessWidget {
   /// If `matchTextDirection` is set to true, the picture will be flipped
   /// horizontally in [TextDirection.rtl] contexts.
   ///
-  /// The `allowDrawingOutsideOfViewBox` parameter should be used with caution -
+  /// The `allowDrawingOutsideViewBox` parameter should be used with caution -
   /// if set to true, it will not clip the canvas used internally to the view box,
   /// meaning the picture may draw beyond the intended area and lead to undefined
   /// behavior or additional memory overhead.
@@ -248,16 +260,20 @@ class SvgPicture extends StatelessWidget {
     this.semanticsLabel,
     this.excludeFromSemantics = false,
     this.clipBehavior = Clip.hardEdge,
+    this.errorBuilder,
     @Deprecated('This no longer does anything.') bool cacheColorFilter = false,
     SvgTheme? theme,
+    ColorMapper? colorMapper,
     http.Client? httpClient,
-  })  : bytesLoader = SvgNetworkLoader(
-          url,
-          headers: headers,
-          theme: theme,
-          httpClient: httpClient,
-        ),
-        colorFilter = colorFilter ?? _getColorFilter(color, colorBlendMode);
+    this.renderingStrategy = RenderingStrategy.picture,
+  }) : bytesLoader = SvgNetworkLoader(
+         url,
+         headers: headers,
+         theme: theme,
+         colorMapper: colorMapper,
+         httpClient: httpClient,
+       ),
+       colorFilter = colorFilter ?? _getColorFilter(color, colorBlendMode);
 
   /// Creates a widget that displays an SVG obtained from a [File].
   ///
@@ -271,7 +287,7 @@ class SvgPicture extends StatelessWidget {
   /// If `matchTextDirection` is set to true, the picture will be flipped
   /// horizontally in [TextDirection.rtl] contexts.
   ///
-  /// The `allowDrawingOutsideOfViewBox` parameter should be used with caution -
+  /// The `allowDrawingOutsideViewBox` parameter should be used with caution -
   /// if set to true, it will not clip the canvas used internally to the view box,
   /// meaning the picture may draw beyond the intended area and lead to undefined
   /// behavior or additional memory overhead.
@@ -306,10 +322,17 @@ class SvgPicture extends StatelessWidget {
     this.semanticsLabel,
     this.excludeFromSemantics = false,
     this.clipBehavior = Clip.hardEdge,
+    this.errorBuilder,
     SvgTheme? theme,
+    ColorMapper? colorMapper,
     @Deprecated('This no longer does anything.') bool cacheColorFilter = false,
-  })  : bytesLoader = SvgFileLoader(file, theme: theme),
-        colorFilter = colorFilter ?? _getColorFilter(color, colorBlendMode);
+    this.renderingStrategy = RenderingStrategy.picture,
+  }) : bytesLoader = SvgFileLoader(
+         file,
+         theme: theme,
+         colorMapper: colorMapper,
+       ),
+       colorFilter = colorFilter ?? _getColorFilter(color, colorBlendMode);
 
   /// Creates a widget that displays an SVG obtained from a [Uint8List].
   ///
@@ -323,7 +346,7 @@ class SvgPicture extends StatelessWidget {
   /// If `matchTextDirection` is set to true, the picture will be flipped
   /// horizontally in [TextDirection.rtl] contexts.
   ///
-  /// The `allowDrawingOutsideOfViewBox` parameter should be used with caution -
+  /// The `allowDrawingOutsideViewBox` parameter should be used with caution -
   /// if set to true, it will not clip the canvas used internally to the view box,
   /// meaning the picture may draw beyond the intended area and lead to undefined
   /// behavior or additional memory overhead.
@@ -355,10 +378,17 @@ class SvgPicture extends StatelessWidget {
     this.semanticsLabel,
     this.excludeFromSemantics = false,
     this.clipBehavior = Clip.hardEdge,
+    this.errorBuilder,
     SvgTheme? theme,
+    ColorMapper? colorMapper,
     @Deprecated('This no longer does anything.') bool cacheColorFilter = false,
-  })  : bytesLoader = SvgBytesLoader(bytes, theme: theme),
-        colorFilter = colorFilter ?? _getColorFilter(color, colorBlendMode);
+    this.renderingStrategy = RenderingStrategy.picture,
+  }) : bytesLoader = SvgBytesLoader(
+         bytes,
+         theme: theme,
+         colorMapper: colorMapper,
+       ),
+       colorFilter = colorFilter ?? _getColorFilter(color, colorBlendMode);
 
   /// Creates a widget that displays an SVG obtained from a [String].
   ///
@@ -372,7 +402,7 @@ class SvgPicture extends StatelessWidget {
   /// If `matchTextDirection` is set to true, the picture will be flipped
   /// horizontally in [TextDirection.rtl] contexts.
   ///
-  /// The `allowDrawingOutsideOfViewBox` parameter should be used with caution -
+  /// The `allowDrawingOutsideViewBox` parameter should be used with caution -
   /// if set to true, it will not clip the canvas used internally to the view box,
   /// meaning the picture may draw beyond the intended area and lead to undefined
   /// behavior or additional memory overhead.
@@ -404,19 +434,27 @@ class SvgPicture extends StatelessWidget {
     this.semanticsLabel,
     this.excludeFromSemantics = false,
     this.clipBehavior = Clip.hardEdge,
+    this.errorBuilder,
     SvgTheme? theme,
+    ColorMapper? colorMapper,
     @Deprecated('This no longer does anything.') bool cacheColorFilter = false,
-  })  : bytesLoader = SvgStringLoader(string, theme: theme),
-        colorFilter = colorFilter ?? _getColorFilter(color, colorBlendMode);
+    this.renderingStrategy = RenderingStrategy.picture,
+  }) : bytesLoader = SvgStringLoader(
+         string,
+         theme: theme,
+         colorMapper: colorMapper,
+       ),
+       colorFilter = colorFilter ?? _getColorFilter(color, colorBlendMode);
 
   static ColorFilter? _getColorFilter(
-          ui.Color? color, ui.BlendMode colorBlendMode) =>
-      color == null ? null : ui.ColorFilter.mode(color, colorBlendMode);
+    ui.Color? color,
+    ui.BlendMode colorBlendMode,
+  ) => color == null ? null : ui.ColorFilter.mode(color, colorBlendMode);
 
   /// The default placeholder for a SVG that may take time to parse or
   /// retrieve, e.g. from a network location.
-  static WidgetBuilder defaultPlaceholderBuilder =
-      (BuildContext ctx) => const LimitedBox();
+  static WidgetBuilder defaultPlaceholderBuilder = (BuildContext ctx) =>
+      const LimitedBox();
 
   /// If specified, the width to use for the SVG.  If unspecified, the SVG
   /// will take the width of its parent.
@@ -487,8 +525,19 @@ class SvgPicture extends StatelessWidget {
   /// Defaults to [Clip.hardEdge], and must not be null.
   final Clip clipBehavior;
 
+  /// Widget displayed while the target image failed loading.
+  final SvgErrorWidgetBuilder? errorBuilder;
+
   /// The color filter, if any, to apply to this widget.
   final ColorFilter? colorFilter;
+
+  /// Widget rendering strategy used to balance flexibility and performance.
+  ///
+  /// See the enum [RenderingStrategy] for details of all possible options and their common
+  /// use cases.
+  ///
+  /// Defaults to [RenderingStrategy.picture].
+  final RenderingStrategy renderingStrategy;
 
   @override
   Widget build(BuildContext context) {
@@ -501,8 +550,10 @@ class SvgPicture extends StatelessWidget {
       semanticsLabel: semanticsLabel,
       excludeFromSemantics: excludeFromSemantics,
       clipBehavior: clipBehavior,
+      errorBuilder: errorBuilder,
       colorFilter: colorFilter,
       placeholderBuilder: placeholderBuilder,
+      strategy: renderingStrategy,
       clipViewbox: !allowDrawingOutsideViewBox,
       matchTextDirection: matchTextDirection,
     );
@@ -513,57 +564,63 @@ class SvgPicture extends StatelessWidget {
     super.debugFillProperties(properties);
 
     properties
-      ..add(StringProperty(
-        'bytesLoader',
-        bytesLoader.toString(),
-        showName: false,
-      ))
+      ..add(
+        StringProperty('bytesLoader', bytesLoader.toString(), showName: false),
+      )
       ..add(DoubleProperty('width', width, defaultValue: null))
       ..add(DoubleProperty('height', height, defaultValue: null))
-      ..add(DiagnosticsProperty<AlignmentGeometry>(
-        'alignment',
-        alignment,
-        defaultValue: Alignment.center,
-      ))
-      ..add(DiagnosticsProperty<bool>(
-        'allowDrawingOutsideViewBox',
-        allowDrawingOutsideViewBox,
-        defaultValue: false,
-      ))
-      ..add(EnumProperty<Clip>(
-        'clipBehavior',
-        clipBehavior,
-        defaultValue: BoxFit.contain,
-      ))
-      ..add(StringProperty(
-        'colorFilter',
-        colorFilter.toString(),
-        defaultValue: null,
-      ))
-      ..add(EnumProperty<BoxFit>(
-        'fit',
-        fit,
-        defaultValue: BoxFit.contain,
-      ))
-      ..add(DiagnosticsProperty<Function>(
-        'placeholderBuilder',
-        placeholderBuilder,
-        defaultValue: null,
-      ))
-      ..add(DiagnosticsProperty<bool>(
-        'matchTextDirection',
-        matchTextDirection,
-        defaultValue: false,
-      ))
-      ..add(DiagnosticsProperty<bool>(
-        'excludeFromSemantics',
-        excludeFromSemantics,
-        defaultValue: false,
-      ))
-      ..add(StringProperty(
-        'semanticsLabel',
-        semanticsLabel,
-        defaultValue: null,
-      ));
+      ..add(
+        DiagnosticsProperty<AlignmentGeometry>(
+          'alignment',
+          alignment,
+          defaultValue: Alignment.center,
+        ),
+      )
+      ..add(
+        DiagnosticsProperty<bool>(
+          'allowDrawingOutsideViewBox',
+          allowDrawingOutsideViewBox,
+          defaultValue: false,
+        ),
+      )
+      ..add(
+        EnumProperty<Clip>(
+          'clipBehavior',
+          clipBehavior,
+          defaultValue: BoxFit.contain,
+        ),
+      )
+      ..add(
+        StringProperty(
+          'colorFilter',
+          colorFilter.toString(),
+          defaultValue: null,
+        ),
+      )
+      ..add(EnumProperty<BoxFit>('fit', fit, defaultValue: BoxFit.contain))
+      ..add(
+        DiagnosticsProperty<Function>(
+          'placeholderBuilder',
+          placeholderBuilder,
+          defaultValue: null,
+        ),
+      )
+      ..add(
+        DiagnosticsProperty<bool>(
+          'matchTextDirection',
+          matchTextDirection,
+          defaultValue: false,
+        ),
+      )
+      ..add(
+        DiagnosticsProperty<bool>(
+          'excludeFromSemantics',
+          excludeFromSemantics,
+          defaultValue: false,
+        ),
+      )
+      ..add(
+        StringProperty('semanticsLabel', semanticsLabel, defaultValue: null),
+      );
   }
 }
