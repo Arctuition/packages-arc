@@ -1319,7 +1319,11 @@ class Camera
     if (captureSession != null) {
       Log.i(TAG, "closeCaptureSession");
 
-      captureSession.close();
+      try {
+        captureSession.close();
+      } catch (Exception e) {
+        Log.e(TAG, "Error while closing captureSession", e);
+      }
       captureSession = null;
     }
   }
