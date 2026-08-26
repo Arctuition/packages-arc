@@ -1988,7 +1988,13 @@ interface InAppPurchaseApi {
                 reply.reply(MessagesPigeonUtils.wrapError(error))
               } else {
                 val data = result.getOrNull()
-                reply.reply(MessagesPigeonUtils.wrapResult(data))
+                try {
+                  reply.reply(MessagesPigeonUtils.wrapResult(data))
+                } catch (exception: Throwable) {
+                  // Keep a failed reply from killing the app.
+                  // See https://arcsite.sentry.io/issues/6529551518/
+                  Log.e("IAP", exception.localizedMessage)
+                }
               }
             }
           }
